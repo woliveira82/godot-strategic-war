@@ -1,0 +1,135 @@
+[gd_scene load_steps=11 format=3 uid="uid://cekwn8yj2ac47"]
+
+[ext_resource type="Script" path="res://game/scenes/unit/unit.gd" id="1_0kqkk"]
+[ext_resource type="Texture2D" uid="uid://4yg4j20yh423" path="res://assets/4x4.png" id="2_ojxoi"]
+[ext_resource type="PackedScene" uid="uid://cotwvkbw4hny1" path="res://game/components/hitbox.tscn" id="3_86ocq"]
+[ext_resource type="Texture2D" uid="uid://bv3vndfcswrg0" path="res://assets/img/hatching.png" id="3_ui600"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_c12fb"]
+radius = 27.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_s60u1"]
+radius = 26.0
+
+[sub_resource type="Animation" id="Animation_ng5r5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_wrcsd"]
+resource_name = "death"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_utkj5"]
+resource_name = "red_flash"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 0, 0, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_x4l16"]
+_data = {
+"RESET": SubResource("Animation_ng5r5"),
+"death": SubResource("Animation_wrcsd"),
+"red_flash": SubResource("Animation_utkj5")
+}
+
+[node name="Unit" type="CharacterBody2D" groups=["units"]]
+collision_mask = 15
+input_pickable = true
+motion_mode = 1
+script = ExtResource("1_0kqkk")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_ojxoi")
+hframes = 2
+vframes = 2
+
+[node name="DamageSprite" type="Sprite2D" parent="Sprite2D"]
+modulate = Color(1, 1, 1, 0)
+texture_filter = 1
+texture_repeat = 1
+position = Vector2(0, -4.76837e-06)
+scale = Vector2(0.964285, 0.964285)
+texture = ExtResource("3_ui600")
+
+[node name="Hitbox" parent="." instance=ExtResource("3_86ocq")]
+collision_mask = 2
+
+[node name="CollisionShape2D" parent="Hitbox" index="0"]
+shape = SubResource("CircleShape2D_c12fb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_s60u1")
+
+[node name="WaitTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_x4l16")
+}
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="on_hit_taken" from="Hitbox" to="." method="_on_hit_taken"]
+[connection signal="timeout" from="WaitTimer" to="." method="_on_wait_timer_timeout"]
+
+[editable path="Hitbox"]

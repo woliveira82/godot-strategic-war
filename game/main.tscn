@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://cwdmkblmakjtj"]
+
+[ext_resource type="Script" path="res://game/camera.gd" id="1_0ld3l"]
+[ext_resource type="PackedScene" uid="uid://dmbwivblcnkmy" path="res://game/levels/war_map.tscn" id="2_6imww"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("1_0ld3l")
+
+[node name="WarMap" parent="." node_paths=PackedStringArray("camera") instance=ExtResource("2_6imww")]
+camera = NodePath("../Camera2D")

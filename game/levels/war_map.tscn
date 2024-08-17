@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dmbwivblcnkmy"]
+
+[ext_resource type="Script" path="res://game/levels/war_map.gd" id="1_2s88k"]
+[ext_resource type="PackedScene" uid="uid://cekwn8yj2ac47" path="res://game/scenes/unit/unit.tscn" id="1_58ynt"]
+[ext_resource type="PackedScene" uid="uid://b60wtjsp5xwd5" path="res://game/scenes/spawner/spawner.tscn" id="2_o0oa7"]
+
+[node name="WarMap" type="Node2D"]
+script = ExtResource("1_2s88k")
+
+[node name="Spawner" parent="." instance=ExtResource("2_o0oa7")]
+z_index = -1
+position = Vector2(1069, 331)
+
+[node name="units" type="Node2D" parent="."]
+
+[node name="Unit3" parent="units" instance=ExtResource("1_58ynt")]
+position = Vector2(854, 330)
+team = 1
+
+[node name="Unit" parent="units" instance=ExtResource("1_58ynt")]
+position = Vector2(60, 270)
+
+[node name="Unit2" parent="." instance=ExtResource("1_58ynt")]
+position = Vector2(182, 343)
